@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>addtomap — TikTok authorization</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+  :root { --ink:#4a2a1a; --muted:#8a6a54; --accent:#e0692e; --bg:#fdf1e7;
+          --card:#ffffff; --border:#f2ddc9; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; color: var(--ink);
+         background: linear-gradient(180deg, rgba(255,238,222,.70) 0%, rgba(255,231,210,.95) 100%);
+         background-color: var(--bg); min-height: 100vh; display: flex;
+         align-items: center; justify-content: center; padding: 24px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+          max-width: 560px; width: 100%; padding: 32px 28px; box-shadow: 0 8px 30px rgba(120,70,30,.08); }
+  h1 { font-size: 20px; margin-bottom: 6px; }
+  p { color: var(--muted); font-size: 14px; line-height: 1.5; margin-bottom: 16px; }
+  .code { font-family: 'SF Mono', Menlo, monospace; font-size: 14px; word-break: break-all;
+          background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+          padding: 14px 16px; color: var(--ink); }
+  button { margin-top: 14px; background: var(--accent); color: #fff; border: 0; border-radius: 12px;
+           padding: 12px 18px; font-size: 15px; cursor: pointer; }
+  button:active { opacity: .85; }
+  .err { color: #b23b1e; }
+  .ok { color: #2e7d32; font-size: 13px; margin-top: 10px; min-height: 16px; }
+  .brand { font-size: 12px; color: var(--muted); margin-top: 22px; text-align: center; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>📍 addtomap — TikTok authorization</h1>
+    <div id="body">
+      <p>Reading authorization result…</p>
+    </div>
+    <div class="brand">addtomap.co · this page just relays your TikTok authorization code</div>
+  </div>
+<script>
+  (function () {
+    var q = new URLSearchParams(window.location.search);
+    var code = q.get("code");
+    var err = q.get("error") || q.get("error_description");
+    var state = q.get("state") || "";
+    var body = document.getElementById("body");
+    if (code) {
+      body.innerHTML =
+        '<p>Authorization succeeded. Copy this code and paste it back into the addtomap bot to finish connecting TikTok.</p>' +
+        '<div class="code" id="code"></div>' +
+        '<button id="copy">Copy code</button>' +
+        '<div class="ok" id="ok"></div>' +
+        (state ? '<p style="margin-top:14px;font-size:12px;">state: <span class="code" style="display:inline;padding:2px 6px;">' + '</span></p>' : '');
+      document.getElementById("code").textContent = code;
+      if (state) { document.querySelectorAll('.code')[1].textContent = state; }
+      document.getElementById("copy").addEventListener("click", function () {
+        navigator.clipboard.writeText(code).then(function () {
+          document.getElementById("ok").textContent = "Copied ✓";
+        }, function () {
+          document.getElementById("ok").textContent = "Select the code above and copy manually.";
+        });
+      });
+    } else if (err) {
+      body.innerHTML = '<p class="err">Authorization failed: ' + err.replace(/[<>&]/g, "") + '</p>' +
+        '<p>Close this tab and try connecting again from the bot.</p>';
+    } else {
+      body.innerHTML = '<p>No authorization code found in the URL. Open this page only via the TikTok login redirect.</p>';
+    }
+  })();
+</script>
+</body>
+</html>
