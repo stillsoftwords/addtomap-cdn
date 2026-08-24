@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="tiktok-developers-site-verification" content="cpRnBoW6RLdmoMW2WEbi3jzBvjMiIqmT">
+<title>addtomap — connect TikTok</title>
+<style>
+  :root { --ink:#4a2a1a; --muted:#8a6a54; --accent:#e0692e; --bg:#fdf1e7;
+          --card:#ffffff; --border:#f2ddc9; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; color: var(--ink);
+         background: linear-gradient(180deg, rgba(255,238,222,.70) 0%, rgba(255,231,210,.95) 100%);
+         background-color: var(--bg); min-height: 100vh; display: flex;
+         align-items: center; justify-content: center; padding: 24px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+          max-width: 560px; width: 100%; padding: 34px 30px; box-shadow: 0 8px 30px rgba(120,70,30,.08); }
+  h1 { font-size: 22px; margin-bottom: 8px; }
+  p { color: var(--muted); font-size: 14px; line-height: 1.55; margin-bottom: 16px; }
+  ul { color: var(--muted); font-size: 13px; line-height: 1.5; margin: 0 0 20px 18px; }
+  a.btn { display: inline-flex; align-items: center; gap: 10px; text-decoration: none;
+          background: var(--accent); color: #fff; border-radius: 12px;
+          padding: 14px 22px; font-size: 16px; font-weight: 600; }
+  a.btn:active { opacity: .85; }
+  .brand { font-size: 12px; color: var(--muted); margin-top: 24px; text-align: center; }
+  .brand a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>📍 Connect your TikTok account</h1>
+    <p>Authorize <strong>addtomap</strong> to publish your travel reels straight to your
+       TikTok profile. You stay in control — you can disconnect any time in TikTok settings.</p>
+    <ul>
+      <li>We read your basic profile info (<code>user.info.basic</code>)</li>
+      <li>We publish videos you approve to your profile (<code>video.publish</code>)</li>
+    </ul>
+    <a class="btn" id="connect" href="#">🎵 Connect TikTok</a>
+    <div class="brand">addtomap.co · places worth adding to your map ·
+      <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></div>
+  </div>
+<script>
+  (function () {
+    // random state for CSRF; the callback page echoes it back for verification
+    var state = (function () {
+      try { var a = new Uint8Array(16); crypto.getRandomValues(a);
+            return Array.from(a, function (b) { return ("0" + b.toString(16)).slice(-2); }).join(""); }
+      catch (e) { return "st" + new Date().getTime(); }
+    })();
+    try { sessionStorage.setItem("tiktok_oauth_state", state); } catch (e) {}
+    var params = new URLSearchParams({
+      client_key: "awh6784a1dd4dz0g",
+      scope: "user.info.basic,video.publish",
+      response_type: "code",
+      redirect_uri: "https://addtomap.co/tiktok/callback",
+      state: state
+    });
+    document.getElementById("connect").href =
+      "https://www.tiktok.com/v2/auth/authorize/?" + params.toString();
+  })();
+</script>
+</body>
+</html>
